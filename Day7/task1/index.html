@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET","https://restcountries.com/v3.1/all");
+        xhr.onload = function(){
+            if(xhr.status === 200){
+                countryDetails = JSON.parse(xhr.response);
+                //document.getElementById("a").innerHTML = xhr.response;
+                console.log("Countries :", countryDetails);
+                const countriesAsia = countryDetails.filter((countriesInAsia) =>{
+                    if(countriesInAsia.region === "Asia"){
+                        return true;
+                    }
+                });
+                console.log("Countries in Asia :", countriesAsia);
+                //Display countries in Asia in p tag #a
+                const asianNames  = countriesAsia.map((countryname) => {
+                    return countryname.name.official;
+                });
+                document.getElementById("a").innerHTML = asianNames.join(",");
+
+                //Get all the countries with a population of less than 2 lakhs using Filter function
+                const belowPopulation = countryDetails.filter((countryname) =>{
+                    //console.log(countryname.population);
+                    if(countryname.population <= 200000){
+                        return countryname;
+                    }
+                });
+                console.log("below 200000 :", belowPopulation);
+                const lowPopCountryNames = belowPopulation.map((countryname) =>{
+                    return countryname.name.official;
+                });
+                console.log("low population countries :", lowPopCountryNames);
+                document.getElementById("b").innerText = lowPopCountryNames.join(",");
+
+                //Print the following details name, capital, flag using forEach function
+                // countryDetails.forEach(element => {
+                //     console.log("Name :", element.name.official);
+                //     element.capital.forEach(cap => {
+                //         console.log("Capital : ", cap);
+                //     });
+                //     console.log("Flag :", element.flag);
+
+                countryDetails.forEach((country) => {
+                        console.log("Name: ", country.name.official);
+                        
+                        //console.log("Capital: ", country.capital[0]);
+                        const hasNameKey = country.hasOwnProperty("capital");
+                        if(hasNameKey === true){
+                            country.capital.forEach((cap) => {
+                            console.log("Capital: ", cap);
+                        });
+                        
+                        }else{
+                            console.log("Capital: Has no separate capital");
+                        }
+                        console.log("Flag: ", country.flag);
+                    });
+                    // document.getElementById("c").innerHTML += "Name : ";
+                    // document.getElementById("c").innerHTML += element.name.official;
+                    // document.getElementById("c").innerHTML += "<br>";
+                    // document.getElementById("c").innerHTML += "Capital :";
+                    // document.getElementById("c").innerHTML += element.capital[0];
+                    // document.getElementById("c").innerHTML += "<br>";
+                    // document.getElementById("c").innerHTML += "Flag :";
+                    // document.getElementById("c").innerHTML += element.flag;
+                    // document.getElementById("c").innerHTML += "<br>";
+               
+
+                //Print the total population of countries using reduce function
+                const totalPopulation = countryDetails.reduce((acc,cv, ci) => {
+                    cv = parseInt(countryDetails[ci].population,10);
+                    //console.log(cv, typeof(cv));
+                    //console.log(total, typeof(total));
+                    return acc = parseInt(acc,10) + cv;
+                    //return total ;
+                });
+                console.log("Total Population: ", totalPopulation);
+
+                //Print the country which uses US Dollars as currency.
+                const usdCountries = countryDetails.filter((country) => {
+                    //console.log(country.name.official);
+                    if(country.hasOwnProperty("currencies") === true){
+                        if( country.currencies.hasOwnProperty("USD") === true ){
+                            console.log(country.name.official);
+                            return true;
+                        }
+                    }
+                });
+                console.log("Countries using USD are :", usdCountries);
+                
+            }else{
+                console.log("ERROR !");
+            }
+        }
+        xhr.send();
+    </script>
+</head>
+<body>
+    <h1>Solving problems using array functions on rest countries data (https://restcountries.com/v3.1/all).</h1>
+    
+    <h2>Question a: Get all the countries from Asia continent /region using Filter function</h2>
+    <h3> Answer: Countries from Asia continent is below</h3>
+    <section id="a"></section>
+   
+    <h2>Question b: Get all the countries with a population of less than 2 lakhs using Filter function</h2>
+    <section id="b">Countries from Asia continent</section>
+ 
+    <h2>Question c: Print the following details name, capital, flag using forEach function</h2>
+    <section id="c"></section>
+    
+    <h2>Question d: Print the total population of countries using reduce function</h2>
+    <section id="d"></section>
+    <script>
+        document.getElementById("d").innerText = "Not solved yet";
+    </script>
+</body>
+</html>
